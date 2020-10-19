@@ -1,6 +1,7 @@
 from typing import Iterable, Optional
 
 from ..settings import config
+import os
 
 
 def get_changelog_sections(changelog: dict, changelog_sections: list) -> Iterable[str]:
@@ -15,10 +16,11 @@ def get_changelog_sections(changelog: dict, changelog_sections: list) -> Iterabl
 
 
 def get_hash_link(owner: str, repo_name: str, hash_: str) -> str:
+    github_domain = os.environ.get("GH_DOMAIN", "github.com")
     url = (
         f"https://gitlab.com/{owner}/{repo_name}/-/commit/{hash_}"
         if config.get("hvcs") == "gitlab"
-        else f"https://github.com/{owner}/{repo_name}/commit/{hash_}"
+        else f"https://{github_domain}/{owner}/{repo_name}/commit/{hash_}"
     )
     short_hash = hash_[:7]
     return f"[`{short_hash}`]({url})"

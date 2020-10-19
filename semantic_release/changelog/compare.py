@@ -3,6 +3,8 @@ from typing import Optional
 from ..settings import config
 from ..vcs_helpers import get_repository_owner_and_name
 
+import os
+
 
 def get_github_compare_url(from_version: str, to_version: str) -> str:
     """
@@ -12,9 +14,10 @@ def get_github_compare_url(from_version: str, to_version: str) -> str:
     :param to_version: The newer version to compare.
     :return: Link to view a comparison between the two versions.
     """
+    github_domain = os.environ.get("GH_DOMAIN", "github.com")
     owner, name = get_repository_owner_and_name()
     return (
-        f"https://github.com/{owner}/{name}" f"/compare/v{from_version}...v{to_version}"
+        f"https://{github_domain}/{owner}/{name}" f"/compare/v{from_version}...v{to_version}"
     )
 
 

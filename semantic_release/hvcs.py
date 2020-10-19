@@ -62,7 +62,7 @@ def _fix_mime_types():
 class Github(Base):
     """Github helper class"""
 
-    API_URL = "https://api.github.com"
+    API_URL = "https://api." + os.environ.get("GH_DOMAIN", "github.com")
     _fix_mime_types()
 
     @staticmethod
@@ -71,7 +71,7 @@ class Github(Base):
 
         :return: The Github domain
         """
-        return "github.com"
+        return os.environ.get("GH_DOMAIN", "github.com")
 
     @staticmethod
     def token() -> Optional[str]:
@@ -214,10 +214,11 @@ class Github(Base):
 
         :return: The status of the request
         """
-        url = "https://uploads.github.com/repos/{owner}/{repo}/releases/{id}/assets"
+        url = "https://uploads.{domain}/repos/{owner}/{repo}/releases/{id}/assets"
+        domain = get_domain()
 
         response = requests.post(
-            url.format(owner=owner, repo=repo, id=release_id),
+            url.format(domain=domain, owner=owner, repo=repo, id=release_id),
             params={"name": os.path.basename(file), "label": label},
             headers={
                 "Authorization": "token {}".format(Github.token()),
